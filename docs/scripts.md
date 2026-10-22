@@ -67,6 +67,19 @@ correlations between ownership and the self-reported and mined variables (the
 mined ones come from `common.py` and `spec_analysis.py`); and the comparison
 within pairs between the member with more and the member with fewer commits.
 
+**`src/anonymize_survey.py`** — writes `data/survey-anonymized.csv` from the
+raw export, keeping the columns of the questionnaire so that `survey.py` and
+`likert_figure.py` read it unchanged. The GitHub user becomes a random ID
+(`R01`, ...), the repository becomes the project's name in the paper, and the
+timestamp, age, and gender are left blank, since with the project known they
+would identify respondents. Open answers are replaced by `[omitted]`, which
+keeps the count of respondents who answered them. The variables mined from the
+repositories (own commits, their declared origin, and the team measures) are
+computed per respondent and appended as columns, so the anonymized file needs
+neither the clones nor the mapping between respondents and commit authors. On
+this file, `survey.py` reproduces every number of the paper except the age and
+gender of the participants. `sessions.py --survey` still needs the raw data.
+
 # Steps that are not automated
 
 - The *Agents* column of the table of projects (`data/agents.csv`, read from

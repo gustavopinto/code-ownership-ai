@@ -2,11 +2,13 @@
 """Ownership survey: Participants, RQ3, RQ4, and the survey and correlation tables.
 
 Usage:
+  python3 -I src/survey.py --responses data/survey-anonymized.csv
   python3 -I src/survey.py --responses RESPONSES.csv --identities IDENTITIES.json \
       --gender-codebook CODEBOOK.csv [--projects PROJECTS_DIR] [--latex]
 
 RESPONSES.csv    export of the questionnaire (one row per respondent, columns in
-                 the order of the questionnaire)
+                 the order of the questionnaire), or the anonymized file written by
+                 anonymize_survey.py, which needs none of the other inputs
 IDENTITIES.json  {"fix_repo": {user: repo}, "author_patterns": {user: regex}}:
                  repository corrections and patterns that match a respondent to
                  their commit author name or e-mail when they differ from the
@@ -116,7 +118,21 @@ def score(d, i):
 
 # ---------------------------------------------------------------- loading
 
+# Columns appended by anonymize_survey.py: variables mined from the repositories,
+# computed per respondent so that the anonymized file needs no clone or identity
+REPO_COLUMNS = ["fixed", "own_commits", "own_commit_share", "own_declared", "own_hand_share",
+                "own_handwritten_share", "repo_agent_commits", "repo_specs_by_agent", "repo_sessions",
+                "repo_traced"]
+
+
+def is_anonymized(path):
+    with open(path, encoding="utf-8") as f:
+        return next(csv.reader(f))[-len(REPO_COLUMNS):] == REPO_COLUMNS
+
+
 def load(args):
+    if is_anonymized(args.responses):
+        return load_anonymized(args.responses)
     rows = list(csv.reader(open(args.responses, encoding="utf-8")))[1:]
     ident = json.load(open(args.identities, encoding="utf-8"))
     fix = {k.lower(): v for k, v in ident.get("fix_repo", {}).items()}
@@ -136,6 +152,32 @@ def load(args):
                  ideas_me=num(x[51]), ideas_agent=num(x[52]), code_me=num(x[53]), code_agent=num(x[54]),
                  read=num(x[55]), hours=num(x[56]),
                  open={k: x[i].strip() for k, i in OPEN.items()})
+        for c, items in CONSTRUCTS.items():
+            v = [score(d, i) for i in items if d["L"][i] is not None]
+            d[c] = float(np.mean(v)) if v else None
+        data.append(d)
+    return data
+
+
+def load_anonymized(path):
+    """Respondents of data/survey-anonymized.csv: user is a random ID, repo the project's
+    name in the paper, age and gender are blank, and the repository variables are read
+    from the appended columns instead of the clones."""
+    rows = list(csv.reader(open(path, encoding="utf-8")))[1:]
+    data = []
+    for x in rows:
+        q, extra = x[:-len(REPO_COLUMNS)], dict(zip(REPO_COLUMNS, x[-len(REPO_COLUMNS):]))
+        d = dict(user=q[1], repo=q[2], fixed=extra.pop("fixed") == "1", author_pattern=None,
+                 age=q[3] or "Not released", gender=q[4] or "Not released",
+                 semester=q[5], years=q[6], experience=[t.strip() for t in q[7].split(";") if t.strip()],
+                 freq=q[16].lower(), tools=q[17].lower(), tasks=q[18].lower(), sdd=q[19].lower(),
+                 L={i: likert(q[i]) for i in range(8, 50)},
+                 ideas_me=num(q[51]), ideas_agent=num(q[52]), code_me=num(q[53]), code_agent=num(q[54]),
+                 read=num(q[55]), hours=num(q[56]),
+                 open={k: q[i].strip() for k, i in OPEN.items()})
+        for k, v in extra.items():
+            d[k] = num(v)
+        d["own_commits"] = int(d["own_commits"])
         for c, items in CONSTRUCTS.items():
             v = [score(d, i) for i in items if d["L"][i] is not None]
             d[c] = float(np.mean(v)) if v else None
@@ -353,12 +395,17 @@ def main():
     ap.add_argument("--gender-codebook", default=os.environ.get("SURVEY_GENDER"))
     ap.add_argument("--projects", default=os.environ.get("PROJECTS_DIR"))
     args = ap.parse_args()
-    if not args.projects:
-        ap.error("pass PROJECTS_DIR as an argument or environment variable")
-    if not (args.responses and args.identities and args.gender_codebook):
-        ap.error("--responses, --identities, and --gender-codebook are required")
-    data = load(args)
-    add_repository_variables(data, args.projects)
+    if not args.responses:
+        ap.error("--responses is required")
+    if is_anonymized(args.responses):
+        data = load(args)
+    else:
+        if not args.projects:
+            ap.error("pass PROJECTS_DIR as an argument or environment variable")
+        if not (args.identities and args.gender_codebook):
+            ap.error("--identities and --gender-codebook are required with the raw responses")
+        data = load(args)
+        add_repository_variables(data, args.projects)
     participants(data)
     survey_table(data)
     rq4(data)

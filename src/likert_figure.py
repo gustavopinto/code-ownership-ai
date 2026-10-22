@@ -5,7 +5,8 @@ Usage:
   python3 -I src/likert_figure.py --responses RESPONSES.csv --identities IDENTITIES.json \
       --gender-codebook CODEBOOK.csv --out FIGURE.pdf
 
-Inputs are the same as survey.py (or SURVEY_CSV, SURVEY_IDENTITIES, SURVEY_GENDER).
+Inputs are the same as survey.py (or SURVEY_CSV, SURVEY_IDENTITIES, SURVEY_GENDER);
+with data/survey-anonymized.csv, only --responses is needed.
 One panel per construct, one diverging bar per statement, with the share of
 respondents at each point of the scale. Requires pandas, matplotlib, and
 plot_likert.
@@ -24,7 +25,7 @@ import pandas as pd  # noqa: E402
 import plot_likert  # noqa: E402
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from survey import CONSTRUCTS, REVERSE, STATEMENTS, alpha, load  # noqa: E402
+from survey import CONSTRUCTS, REVERSE, STATEMENTS, alpha, is_anonymized, load  # noqa: E402
 
 SCALE = ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"]
 COLORS = plot_likert.colors.likert5
@@ -72,8 +73,10 @@ def main():
     ap.add_argument("--gender-codebook", default=os.environ.get("SURVEY_GENDER"))
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
-    if not (args.responses and args.identities and args.gender_codebook):
-        ap.error("--responses, --identities, and --gender-codebook are required")
+    if not args.responses:
+        ap.error("--responses is required")
+    if not is_anonymized(args.responses) and not (args.identities and args.gender_codebook):
+        ap.error("--identities and --gender-codebook are required with the raw responses")
     data = load(args)
 
     plt.rcParams.update({"font.size": 7, "font.family": "serif"})
