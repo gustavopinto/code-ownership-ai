@@ -1,0 +1,21 @@
+# Agents declared in commit trailers and in the README of each project (read manually).
+# Abbreviations: AG Antigravity, CC Claude Code, Co GitHub Copilot, Cx Codex, DS DeepSeek, Ge Gemini, GPT ChatGPT, OC OpenCode
+folder,agents
+dsai-ap1-reservei,"AG, CC"
+dsai-ap1-eduquest,"OC, CC"
+dsai-ap1-trim,AG
+dsai-ap1-kapitrace,"Cx, AG"
+dsai-ap1-GameLog,"CC, Co"
+dsai-ap1-EstiloMarcado,"Cx, DS"
+dsai-ap1-serviceflow,Co
+dsai_ap1-Reprodutor-Media-Play,AG
+dsai-ap1-financas,CC
+dsai-ap1--HealthOS-,CC
+dsai-ap1-delivery,"GPT, Ge"
+dsai-ap1-sigrestaurant,Cx
+dsai-ap1-proj-leiloes-judiciais,CC
+dasi-ap1-election-ops-plataform,"Cx, CC, DS, Co, GPT"
+dsai-ap1-circuitcrash,CC
+dsai-ap1--FilmeCerto-,CC
+dsai-ap1-2Drogue,Cx
+dsai-ap1-consultas,CC

@@ -1,0 +1,8 @@
+# Candidates confirmed by manual inspection (gaming.py --confirmed).
+# <project folder> <path prefix>
+dsai-ap1-delivery src/js/database.js
+dsai-ap1-delivery src/components/
+dsai-ap1-delivery gerador.py
+dsai-ap1-trim tests/
+dsai-ap1-2Drogue src/content/
+dsai-ap1-2Drogue scripts/generate-content-packs.mjs
