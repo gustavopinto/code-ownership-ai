@@ -2,7 +2,7 @@
 """Automated tests in the projects (not required by the assignment).
 
 Usage:
-  python3 -I tests_analysis.py PROJECTS_DIR [--cloc CLOC] [--exclude data/confirmed.txt]
+  python3 -I src/tests_analysis.py PROJECTS_DIR [--cloc CLOC] [--exclude data/confirmed.txt]
 
 For each project, in its last commit:
   test files     code files under a test folder (test/, tests/, __tests__/, e2e/,
@@ -106,8 +106,8 @@ def main():
     here = os.path.dirname(os.path.abspath(__file__))
     ap = argparse.ArgumentParser()
     ap.add_argument("projects", nargs="?", default=os.environ.get("PROJECTS_DIR"))
-    ap.add_argument("--cloc", default=os.path.join(here, "cloc-1.98.pl"))
-    ap.add_argument("--exclude", default=os.path.join(here, "data", "confirmed.txt"),
+    ap.add_argument("--cloc", default=os.path.join(here, "..", "vendor", "cloc-1.98.pl"))
+    ap.add_argument("--exclude", default=os.path.join(here, "..", "data", "confirmed.txt"),
                     help='lines "<project folder> <path prefix>" of confirmed gaming')
     args = ap.parse_args()
     if not args.projects:

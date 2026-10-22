@@ -2,7 +2,7 @@
 """Figure with the answers to the Likert statements of the ownership survey.
 
 Usage:
-  python3 -I likert_figure.py --responses RESPONSES.csv --identities IDENTITIES.json \
+  python3 -I src/likert_figure.py --responses RESPONSES.csv --identities IDENTITIES.json \
       --gender-codebook CODEBOOK.csv --out FIGURE.pdf
 
 Inputs are the same as survey.py (or SURVEY_CSV, SURVEY_IDENTITIES, SURVEY_GENDER).

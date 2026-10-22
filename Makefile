@@ -6,7 +6,8 @@
 
 PYTHON  ?= python3 -I
 OUT     ?= out
-CLOC    ?= $(CURDIR)/cloc-1.98.pl
+SRC     := src
+CLOC    ?= $(CURDIR)/vendor/cloc-1.98.pl
 UNTIL   ?= 2026-10-07
 CONFIRMED ?= data/confirmed.txt
 API_CACHE ?= $(OUT)/github-api-cache.json
@@ -47,34 +48,34 @@ check-github:
 	@test -n "$(GITHUB_LIST)" || { echo "error: set GITHUB_LIST (lines '<folder> <owner>/<repo>')"; exit 1; }
 
 adherence: check-projects | $(OUT)
-	$(PYTHON) adherence.py "$(PROJECTS_DIR)" --latex | tee $(OUT)/adherence.txt
+	$(PYTHON) $(SRC)/adherence.py "$(PROJECTS_DIR)" --latex | tee $(OUT)/adherence.txt
 
 specs: check-projects | $(OUT)
-	$(PYTHON) spec_analysis.py "$(PROJECTS_DIR)" --latex --csv $(OUT)/specs.csv | tee $(OUT)/specs.txt
+	$(PYTHON) $(SRC)/spec_analysis.py "$(PROJECTS_DIR)" --latex --csv $(OUT)/specs.csv | tee $(OUT)/specs.txt
 
 table: check-projects | $(OUT)
-	$(PYTHON) project_table.py "$(PROJECTS_DIR)" | tee $(OUT)/table.txt
+	$(PYTHON) $(SRC)/project_table.py "$(PROJECTS_DIR)" | tee $(OUT)/table.txt
 
 tests: check-projects | $(OUT)
-	$(PYTHON) tests_analysis.py "$(PROJECTS_DIR)" | tee $(OUT)/tests.txt
+	$(PYTHON) $(SRC)/tests_analysis.py "$(PROJECTS_DIR)" | tee $(OUT)/tests.txt
 
 sessions: check-projects | $(OUT)
-	$(PYTHON) sessions.py "$(PROJECTS_DIR)" | tee $(OUT)/sessions.txt
+	$(PYTHON) $(SRC)/sessions.py "$(PROJECTS_DIR)" | tee $(OUT)/sessions.txt
 
 gaming: check-projects check-github | $(OUT)
-	$(PYTHON) gaming.py "$(PROJECTS_DIR)" --cloc "$(CLOC)" --github "$(GITHUB_LIST)" \
+	$(PYTHON) $(SRC)/gaming.py "$(PROJECTS_DIR)" --cloc "$(CLOC)" --github "$(GITHUB_LIST)" \
 	  --until $(UNTIL) --confirmed $(CONFIRMED) --api-cache $(API_CACHE) \
 	  --json $(OUT)/gaming.json | tee $(OUT)/gaming.txt
 
 survey: check-projects check-survey | $(OUT)
-	$(PYTHON) survey.py --responses "$(SURVEY_CSV)" --identities "$(SURVEY_IDENTITIES)" \
+	$(PYTHON) $(SRC)/survey.py --responses "$(SURVEY_CSV)" --identities "$(SURVEY_IDENTITIES)" \
 	  --gender-codebook "$(SURVEY_GENDER)" --projects "$(PROJECTS_DIR)" | tee $(OUT)/survey.txt
 
 FIGURE ?= ../figures/survey-likert.pdf
 
 figures: check-survey
-	$(PYTHON) likert_figure.py --responses "$(SURVEY_CSV)" --identities "$(SURVEY_IDENTITIES)" \
+	$(PYTHON) $(SRC)/likert_figure.py --responses "$(SURVEY_CSV)" --identities "$(SURVEY_IDENTITIES)" \
 	  --gender-codebook "$(SURVEY_GENDER)" --out "$(FIGURE)"
 
 clean:
-	rm -rf $(OUT) __pycache__
+	rm -rf $(OUT) $(SRC)/__pycache__

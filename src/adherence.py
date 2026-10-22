@@ -3,7 +3,7 @@
 adherence, the description of the projects (Participants and Projects), and RQ1.
 
 Usage:
-  python3 -I adherence.py PROJECTS_DIR [--latex]
+  python3 -I src/adherence.py PROJECTS_DIR [--latex]
 
 PROJECTS_DIR (or the environment variable PROJECTS_DIR) holds one git clone
 per team. Requires git and perl (for the bundled cloc 1.98).
@@ -20,7 +20,7 @@ from common import (git, load_commits, authorship, trailer_values, is_spec, is_o
                     NONE_VALUES, AGENTS, repos, sessions)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-CLOC = os.path.join(HERE, "cloc-1.98.pl")
+CLOC = os.path.join(HERE, "..", "vendor", "cloc-1.98.pl")
 CLOC_ARGS = ["--vcs=git", "--exclude-dir=node_modules,vendor,dist,build,prompts",
              "--exclude-lang=Markdown,JSON,YAML,CSV,Text,SVG",
              r"--not-match-f=(lock|\.min\.)", "--csv", "--quiet"]

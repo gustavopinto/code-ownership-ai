@@ -2,7 +2,7 @@
 """Ownership survey: Participants, RQ3, RQ4, and the survey and correlation tables.
 
 Usage:
-  python3 -I survey.py --responses RESPONSES.csv --identities IDENTITIES.json \
+  python3 -I src/survey.py --responses RESPONSES.csv --identities IDENTITIES.json \
       --gender-codebook CODEBOOK.csv [--projects PROJECTS_DIR] [--latex]
 
 RESPONSES.csv    export of the questionnaire (one row per respondent, columns in

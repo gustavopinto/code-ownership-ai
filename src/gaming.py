@@ -30,7 +30,7 @@ negatives are reported too. Every candidate is meant for manual inspection.
     T1 session files that mention the target (100k, cloc, volume, ...)
 
 Usage:
-  python3 -I gaming.py [PROJECTS_DIR] [--cloc CLOC] [--github FILE] [--until DATE]
+  python3 -I src/gaming.py [PROJECTS_DIR] [--cloc CLOC] [--github FILE] [--until DATE]
                        [--api-cache FILE] [--confirmed FILE] [--json OUT]
   --github FILE  lines "<project folder> <owner>/<repo>"; GITHUB_TOKEN is used if set
   --until DATE   marks activity after DATE (YYYY-MM-DD) as after data collection
@@ -505,7 +505,7 @@ def main():
     here = os.path.dirname(os.path.abspath(__file__))
     ap = argparse.ArgumentParser()
     ap.add_argument("projects", nargs="?", default=os.environ.get("PROJECTS_DIR"))
-    ap.add_argument("--cloc", default=os.path.join(here, "cloc-1.98.pl"))
+    ap.add_argument("--cloc", default=os.path.join(here, "..", "vendor", "cloc-1.98.pl"))
     ap.add_argument("--github", help='file with lines "<project folder> <owner>/<repo>"')
     ap.add_argument("--until", help="data collection date (YYYY-MM-DD)")
     ap.add_argument("--api-cache", help="JSON file caching GitHub API responses (read and updated)")

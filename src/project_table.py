@@ -2,7 +2,7 @@
 """Table of projects: process measures (RQ1) and specification measures (RQ2).
 
 Usage:
-  python3 -I project_table.py PROJECTS_DIR [--agents data/agents.csv]
+  python3 -I src/project_table.py PROJECTS_DIR [--agents data/agents.csv]
 
 Combines adherence.py and spec_analysis.py into the rows of the LaTeX table.
 The Agents column is read from data/agents.csv (taken from each README).
@@ -37,11 +37,11 @@ def main():
     here = os.path.dirname(os.path.abspath(__file__))
     ap = argparse.ArgumentParser()
     ap.add_argument("projects", nargs="?", default=os.environ.get("PROJECTS_DIR"))
-    ap.add_argument("--agents", default=os.path.join(here, "data", "agents.csv"))
+    ap.add_argument("--agents", default=os.path.join(here, "..", "data", "agents.csv"))
     args = ap.parse_args()
     if not args.projects:
         ap.error("pass PROJECTS_DIR as an argument or environment variable")
-    gamed = load_excluded(os.path.join(here, "data", "confirmed.txt"))
+    gamed = load_excluded(os.path.join(here, "..", "data", "confirmed.txt"))
     agents = {r["folder"]: r["agents"] for r in
               csv.DictReader(l for l in open(args.agents, encoding="utf-8") if not l.startswith("#"))}
 

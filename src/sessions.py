@@ -3,7 +3,7 @@
 coverage of agent commits, and prompting by student.
 
 Usage:
-  python3 -I sessions.py PROJECTS_DIR [--survey] [--csv prompts.csv]
+  python3 -I src/sessions.py PROJECTS_DIR [--survey] [--csv prompts.csv]
 
 PROJECTS_DIR (or $PROJECTS_DIR) holds one git clone per team. With --survey,
 the per-student measures are correlated with ownership; it needs the inputs of
